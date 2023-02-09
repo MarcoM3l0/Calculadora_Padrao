@@ -47,7 +47,6 @@
             this.btnMenos = new System.Windows.Forms.Button();
             this.btnDividir = new System.Windows.Forms.Button();
             this.btnVezes = new System.Windows.Forms.Button();
-            this.btnMaisOuMenos = new System.Windows.Forms.Button();
             this.btnIgual = new System.Windows.Forms.Button();
             this.btnRaiz = new System.Windows.Forms.Button();
             this.btnPorcentagem = new System.Windows.Forms.Button();
@@ -57,6 +56,7 @@
             this.btnMS = new System.Windows.Forms.Button();
             this.btnMR = new System.Windows.Forms.Button();
             this.btnMC = new System.Windows.Forms.Button();
+            this.btnMaisOuMenos = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtTela
@@ -68,6 +68,7 @@
             this.txtTela.Name = "txtTela";
             this.txtTela.Size = new System.Drawing.Size(254, 67);
             this.txtTela.TabIndex = 0;
+            this.txtTela.Text = "0";
             this.txtTela.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // btn1
@@ -211,7 +212,7 @@
             this.btnLimparTudo.TabIndex = 23;
             this.btnLimparTudo.Text = "CE";
             this.btnLimparTudo.UseVisualStyleBackColor = false;
-            this.btnLimparTudo.Click += new System.EventHandler(this.btnLimparTudo_Click);
+            this.btnLimparTudo.Click += new System.EventHandler(this.Limpar);
             // 
             // btnApagar
             // 
@@ -224,6 +225,7 @@
             this.btnApagar.TabIndex = 22;
             this.btnApagar.Text = "←";
             this.btnApagar.UseVisualStyleBackColor = false;
+            this.btnApagar.Click += new System.EventHandler(this.Limpar);
             // 
             // btnLimpar
             // 
@@ -236,6 +238,7 @@
             this.btnLimpar.TabIndex = 24;
             this.btnLimpar.Text = "C";
             this.btnLimpar.UseVisualStyleBackColor = false;
+            this.btnLimpar.Click += new System.EventHandler(this.Limpar);
             // 
             // btnVirgula
             // 
@@ -246,8 +249,10 @@
             this.btnVirgula.Name = "btnVirgula";
             this.btnVirgula.Size = new System.Drawing.Size(46, 44);
             this.btnVirgula.TabIndex = 12;
+            this.btnVirgula.Tag = ",";
             this.btnVirgula.Text = ",";
             this.btnVirgula.UseVisualStyleBackColor = false;
+            this.btnVirgula.Click += new System.EventHandler(this.btnVirgula_Click);
             // 
             // btnMais
             // 
@@ -305,19 +310,6 @@
             this.btnVezes.UseVisualStyleBackColor = false;
             this.btnVezes.Click += new System.EventHandler(this.Operacao);
             // 
-            // btnMaisOuMenos
-            // 
-            this.btnMaisOuMenos.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.btnMaisOuMenos.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnMaisOuMenos.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMaisOuMenos.Location = new System.Drawing.Point(165, 135);
-            this.btnMaisOuMenos.Name = "btnMaisOuMenos";
-            this.btnMaisOuMenos.Size = new System.Drawing.Size(46, 44);
-            this.btnMaisOuMenos.TabIndex = 17;
-            this.btnMaisOuMenos.Text = "±";
-            this.btnMaisOuMenos.UseVisualStyleBackColor = false;
-            this.btnMaisOuMenos.Click += new System.EventHandler(this.Operacao);
-            // 
             // btnIgual
             // 
             this.btnIgual.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -343,16 +335,18 @@
             this.btnRaiz.Tag = "√";
             this.btnRaiz.Text = "√";
             this.btnRaiz.UseVisualStyleBackColor = false;
+            this.btnRaiz.Click += new System.EventHandler(this.Operacao);
             // 
             // btnPorcentagem
             // 
             this.btnPorcentagem.BackColor = System.Drawing.SystemColors.ControlLight;
             this.btnPorcentagem.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnPorcentagem.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPorcentagem.Location = new System.Drawing.Point(217, 188);
+            this.btnPorcentagem.Location = new System.Drawing.Point(166, 137);
             this.btnPorcentagem.Name = "btnPorcentagem";
             this.btnPorcentagem.Size = new System.Drawing.Size(46, 44);
             this.btnPorcentagem.TabIndex = 19;
+            this.btnPorcentagem.Tag = "%";
             this.btnPorcentagem.Text = "%";
             this.btnPorcentagem.UseVisualStyleBackColor = false;
             this.btnPorcentagem.Click += new System.EventHandler(this.Operacao);
@@ -369,6 +363,7 @@
             this.btnUmPorX.Tag = "²";
             this.btnUmPorX.Text = "x²";
             this.btnUmPorX.UseVisualStyleBackColor = false;
+            this.btnUmPorX.Click += new System.EventHandler(this.Operacao);
             // 
             // btnMMenos
             // 
@@ -435,12 +430,27 @@
             this.btnMC.Text = "MC";
             this.btnMC.UseVisualStyleBackColor = false;
             // 
+            // btnMaisOuMenos
+            // 
+            this.btnMaisOuMenos.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.btnMaisOuMenos.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnMaisOuMenos.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMaisOuMenos.Location = new System.Drawing.Point(217, 186);
+            this.btnMaisOuMenos.Name = "btnMaisOuMenos";
+            this.btnMaisOuMenos.Size = new System.Drawing.Size(46, 44);
+            this.btnMaisOuMenos.TabIndex = 30;
+            this.btnMaisOuMenos.Tag = "!";
+            this.btnMaisOuMenos.Text = "x!";
+            this.btnMaisOuMenos.UseVisualStyleBackColor = false;
+            this.btnMaisOuMenos.Click += new System.EventHandler(this.Operacao);
+            // 
             // frmPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(275, 391);
+            this.Controls.Add(this.btnMaisOuMenos);
             this.Controls.Add(this.txtTela);
             this.Controls.Add(this.btnMMenos);
             this.Controls.Add(this.btnMMais);
@@ -451,7 +461,6 @@
             this.Controls.Add(this.btnPorcentagem);
             this.Controls.Add(this.btnUmPorX);
             this.Controls.Add(this.btnIgual);
-            this.Controls.Add(this.btnMaisOuMenos);
             this.Controls.Add(this.btnDividir);
             this.Controls.Add(this.btnVezes);
             this.Controls.Add(this.btnMenos);
@@ -501,7 +510,6 @@
         private System.Windows.Forms.Button btnMenos;
         private System.Windows.Forms.Button btnDividir;
         private System.Windows.Forms.Button btnVezes;
-        private System.Windows.Forms.Button btnMaisOuMenos;
         private System.Windows.Forms.Button btnIgual;
         private System.Windows.Forms.Button btnRaiz;
         private System.Windows.Forms.Button btnPorcentagem;
@@ -511,6 +519,7 @@
         private System.Windows.Forms.Button btnMS;
         private System.Windows.Forms.Button btnMR;
         private System.Windows.Forms.Button btnMC;
+        private System.Windows.Forms.Button btnMaisOuMenos;
     }
 }
 
