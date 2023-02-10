@@ -35,8 +35,11 @@ namespace Calculadora_Padrão
             if (!txtTela.Text.Contains(","))
             {
                 // Verifica se o usuário está digitando 0 ou não.
+                // Se o usuário ficar apertando 0 ele não irá adicionar, só terá um 0 na tela.
                 if ((txtTela.Text.Length == 1 && txtTela.Text == "0") && botaoNumerico.Text == "0")
                     txtTela.Text = "0";
+
+                // Não apertou 0 para ser o primeiro dígito do número, irá adicionar os número normalmente.
                 else
                 {
                     if((txtTela.Text.Length == 1 && txtTela.Text == "0") && botaoNumerico.Text != "0")
@@ -46,31 +49,26 @@ namespace Calculadora_Padrão
                 }
             }
 
-            else if(txtTela.Text == "-")
-                txtTela.Text = botaoNumerico.Text;
-
             // Tem uma vírgula na tela e adiciona um número após vírgula.
             else
-            {
                 txtTela.Text += botaoNumerico.Text;
-            }   
                
         }
 
+        // Verifica qual operação matemática o usuário vai fazer.
         private void Operacao(object sender, EventArgs e)
         {
             var botaoOperador = ((Button)sender);
             operador = Convert.ToChar(botaoOperador.Tag);
-
             num1 = Convert.ToDouble(txtTela.Text);
 
+            // Esses operadores já dará o resultado sem a necessidade de clicar no botão igual.
             if (operador == '√')
             {
                 num1 = Math.Sqrt(num1);
                 num1 = Math.Round(num1, 2);
                 txtTela.Text = num1.ToString();
             }
-
             else if (operador == '²')
             {
                 num1 = Math.Pow(num1, 2);
@@ -78,18 +76,21 @@ namespace Calculadora_Padrão
 
             }
             else
-            {
                 txtTela.Text = "0";
-            }
 
         }
 
+        // Esse método faz a limpeza, dos números da tela, de tudo incluindo o que tiver na memória ou de um em um caractere.
         private void Limpar(object sender, EventArgs e)
         {
             var botaoLimpar = ((Button)sender);
             lblErro.Visible = false;
+
+            // Apaga somente o número que está na tela. Botão: C.
             if (botaoLimpar.Text == "C")
                 txtTela.Text = "0";
+
+            // Apaga tudo. Botão: CE.
             else if (botaoLimpar.Text == "CE")
             {
                 txtTela.Text = "0";
@@ -98,10 +99,13 @@ namespace Calculadora_Padrão
                 operador = '\0';
                 memoria = 0;
             }
+
+            // Apaga o último caractere do número que está na tela. Botão: ←.
             else
             {
                 if (txtTela.Text.Length == 1)
                     txtTela.Text = "0";
+
                 else
                 {
                     string texto = txtTela.Text;
@@ -109,45 +113,48 @@ namespace Calculadora_Padrão
                     int index = texto.LastIndexOf(",");
 
                     if (index > 0 && Char.IsDigit(texto[index - 1]))
-                    {
                         texto = texto.Substring(0, comprimento - 1);
-                    }
                     else
-                    {
                         texto = texto.Remove(1);
-                    }
+
                     txtTela.Text = texto;
                 }
-
             }
-
         }
 
-        
+        // Botões de memória: MC, MR, MS, M+ e M-.
         private void Memoria(object sender, EventArgs e)
         {
             var botaoMemoria = ((Button)sender);
 
+            // Apaga todos os números salvos na memória. Botão: MC.
             if (botaoMemoria.Text == "MC")
                 memoria = 0;
 
+            // Recupera o último número salvo na memória. Botão: MR.
             else if (botaoMemoria.Text == "MR") 
                 txtTela.Text = memoria.ToString();
 
+            // Salva um novo número na memória. Botão: MS.
             else if (botaoMemoria.Text == "MS")
                 memoria = Convert.ToDouble(txtTela.Text);
 
+            // Soma o número que está na tela com o último número salvo. Botão: M+.
             else if (botaoMemoria.Text == "M+")
                 memoria += Convert.ToDouble(txtTela.Text);
 
+            // Subtrai o número que está na tela com o último número salvo. Botão: M-.
             else
                 memoria -= Convert.ToDouble(txtTela.Text);
         }
 
+        // Faz os cálculos matemáticos solicitados ao clicar no botão igual.
         private void btnIgual_Click(object sender, EventArgs e)
         {
+            // Número digitado após a escolha da operação matemática.
             num2 = Convert.ToDouble(txtTela.Text);
 
+            // Calcula de acordo com a operação.
             if (operador == '+')
             {
                 txtTela.Text = (num1 + num2).ToString();
@@ -165,6 +172,8 @@ namespace Calculadora_Padrão
             }
             else if (operador == '/')
             {
+                // Verifica se o cálculo da divisão pode ser feito ou não.
+                // Se não, vai habilitar uma mensagem de erro na tela.
                 if (txtTela.Text != "0")
                 {
                     txtTela.Text = (num1 / num2).ToString();
@@ -180,6 +189,7 @@ namespace Calculadora_Padrão
             }
         }
 
+        // Inverter o número de positivo para negativo ou vice-versa.
         private void btnMaisOuMenos_Click(object sender, EventArgs e)
         {
             num1 = Convert.ToDouble(txtTela.Text);
@@ -187,6 +197,7 @@ namespace Calculadora_Padrão
             txtTela.Text = num1.ToString();
         }
 
+        // Colocar vírgula no número ao clicar no botão da vírgula.
         private void btnVirgula_Click(object sender, EventArgs e)
         {
             if (!txtTela.Text.Contains(","))
