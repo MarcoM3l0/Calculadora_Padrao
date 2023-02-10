@@ -57,6 +57,7 @@
             this.btnMR = new System.Windows.Forms.Button();
             this.btnMC = new System.Windows.Forms.Button();
             this.btnMaisOuMenos = new System.Windows.Forms.Button();
+            this.lblErro = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtTela
@@ -333,7 +334,7 @@
             this.btnRaiz.Size = new System.Drawing.Size(46, 44);
             this.btnRaiz.TabIndex = 18;
             this.btnRaiz.Tag = "√";
-            this.btnRaiz.Text = "√";
+            this.btnRaiz.Text = "√x";
             this.btnRaiz.UseVisualStyleBackColor = false;
             this.btnRaiz.Click += new System.EventHandler(this.Operacao);
             // 
@@ -342,7 +343,7 @@
             this.btnPorcentagem.BackColor = System.Drawing.SystemColors.ControlLight;
             this.btnPorcentagem.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnPorcentagem.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPorcentagem.Location = new System.Drawing.Point(166, 137);
+            this.btnPorcentagem.Location = new System.Drawing.Point(217, 186);
             this.btnPorcentagem.Name = "btnPorcentagem";
             this.btnPorcentagem.Size = new System.Drawing.Size(46, 44);
             this.btnPorcentagem.TabIndex = 19;
@@ -368,7 +369,6 @@
             // btnMMenos
             // 
             this.btnMMenos.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.btnMMenos.Enabled = false;
             this.btnMMenos.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnMMenos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMMenos.Location = new System.Drawing.Point(218, 86);
@@ -377,11 +377,11 @@
             this.btnMMenos.TabIndex = 29;
             this.btnMMenos.Text = "M-";
             this.btnMMenos.UseVisualStyleBackColor = false;
+            this.btnMMenos.Click += new System.EventHandler(this.Memoria);
             // 
             // btnMMais
             // 
             this.btnMMais.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.btnMMais.Enabled = false;
             this.btnMMais.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnMMais.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMMais.Location = new System.Drawing.Point(166, 85);
@@ -390,11 +390,11 @@
             this.btnMMais.TabIndex = 28;
             this.btnMMais.Text = "M+";
             this.btnMMais.UseVisualStyleBackColor = false;
+            this.btnMMais.Click += new System.EventHandler(this.Memoria);
             // 
             // btnMS
             // 
             this.btnMS.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.btnMS.Enabled = false;
             this.btnMS.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnMS.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMS.Location = new System.Drawing.Point(114, 86);
@@ -403,11 +403,11 @@
             this.btnMS.TabIndex = 27;
             this.btnMS.Text = "MS";
             this.btnMS.UseVisualStyleBackColor = false;
+            this.btnMS.Click += new System.EventHandler(this.Memoria);
             // 
             // btnMR
             // 
             this.btnMR.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.btnMR.Enabled = false;
             this.btnMR.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnMR.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMR.Location = new System.Drawing.Point(62, 86);
@@ -416,11 +416,11 @@
             this.btnMR.TabIndex = 26;
             this.btnMR.Text = "MR";
             this.btnMR.UseVisualStyleBackColor = false;
+            this.btnMR.Click += new System.EventHandler(this.Memoria);
             // 
             // btnMC
             // 
             this.btnMC.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.btnMC.Enabled = false;
             this.btnMC.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnMC.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMC.Location = new System.Drawing.Point(10, 86);
@@ -429,20 +429,34 @@
             this.btnMC.TabIndex = 25;
             this.btnMC.Text = "MC";
             this.btnMC.UseVisualStyleBackColor = false;
+            this.btnMC.Click += new System.EventHandler(this.Memoria);
             // 
             // btnMaisOuMenos
             // 
             this.btnMaisOuMenos.BackColor = System.Drawing.SystemColors.ControlLight;
             this.btnMaisOuMenos.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnMaisOuMenos.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMaisOuMenos.Location = new System.Drawing.Point(217, 186);
+            this.btnMaisOuMenos.Location = new System.Drawing.Point(166, 135);
             this.btnMaisOuMenos.Name = "btnMaisOuMenos";
             this.btnMaisOuMenos.Size = new System.Drawing.Size(46, 44);
             this.btnMaisOuMenos.TabIndex = 30;
-            this.btnMaisOuMenos.Tag = "!";
-            this.btnMaisOuMenos.Text = "x!";
+            this.btnMaisOuMenos.Tag = "";
+            this.btnMaisOuMenos.Text = "±";
             this.btnMaisOuMenos.UseVisualStyleBackColor = false;
-            this.btnMaisOuMenos.Click += new System.EventHandler(this.Operacao);
+            this.btnMaisOuMenos.Click += new System.EventHandler(this.btnMaisOuMenos_Click);
+            // 
+            // lblErro
+            // 
+            this.lblErro.AutoSize = true;
+            this.lblErro.BackColor = System.Drawing.SystemColors.Window;
+            this.lblErro.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblErro.ForeColor = System.Drawing.Color.Red;
+            this.lblErro.Location = new System.Drawing.Point(209, 19);
+            this.lblErro.Name = "lblErro";
+            this.lblErro.Size = new System.Drawing.Size(51, 24);
+            this.lblErro.TabIndex = 31;
+            this.lblErro.Text = "Erro!";
+            this.lblErro.Visible = false;
             // 
             // frmPrincipal
             // 
@@ -450,6 +464,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(275, 391);
+            this.Controls.Add(this.lblErro);
             this.Controls.Add(this.btnMaisOuMenos);
             this.Controls.Add(this.txtTela);
             this.Controls.Add(this.btnMMenos);
@@ -520,6 +535,7 @@
         private System.Windows.Forms.Button btnMR;
         private System.Windows.Forms.Button btnMC;
         private System.Windows.Forms.Button btnMaisOuMenos;
+        private System.Windows.Forms.Label lblErro;
     }
 }
 
