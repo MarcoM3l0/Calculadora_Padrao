@@ -26,8 +26,87 @@ namespace Calculadora_Padrão
 
         }
 
+        private void NumeroAgregadoTeclado(object sender, EventArgs e)
+        {
+            string caracteresPermitidos = "0123456789,+-*/";
+            string texto = txtTela.Text;
+
+            // Obtém o caractere digitado pelo usuário
+            char caractere = ((KeyPressEventArgs)e).KeyChar;
+
+            // Verifica se o caractere digitado é permitido
+            if (caracteresPermitidos.Contains(caractere))
+            {
+                // Verifica se o texto já contém uma vírgula
+                if (!texto.Contains(",") || caractere == ',')
+                {
+                    // Verifica se o texto não começa com zero
+                    if (texto.Length == 1 && texto[0] == '0' && caractere != ',')
+                    {
+                        txtTela.Text = caractere.ToString();
+                    }
+                    else
+                    {
+                        txtTela.Text += caractere;
+                    }
+                }
+            }
+
+            //string caracteresPermitidos = ",Xx*-+/0123456789";
+            //string caracteresNaoPermitidos = "Xx*/+-";
+            //string texto = txtTela.Text;
+            //string novoTexto = "";
+
+            //foreach (char c in texto)
+            //{
+            //    if (caracteresPermitidos.Contains(c))
+            //    {
+            //        novoTexto += c;
+
+            //        if (!novoTexto.Contains(","))
+            //        {
+            //            txtTela.Text += ",";
+            //            novoTexto = "";
+            //        }
+
+            //        if (!caracteresNaoPermitidos.Contains(novoTexto))
+            //        {
+            //            if (!novoTexto.Contains(","))
+            //            {
+            //                if ((txtTela.Text.Length == 1 && txtTela.Text == "0") && novoTexto == "0")
+            //                {
+            //                    txtTela.Text = "0";
+            //                    novoTexto = "";
+            //                }
+
+            //                else
+            //                {
+            //                    if ((txtTela.Text.Length == 1 && txtTela.Text == "0") && novoTexto != "0")
+            //                    {
+            //                        txtTela.Text = novoTexto;
+            //                        novoTexto = "";
+            //                    }
+            //                    else
+            //                    {
+            //                        txtTela.Text += novoTexto;
+            //                        novoTexto = "";
+            //                    }
+            //                }
+            //            }
+            //            else
+            //            {
+            //                txtTela.Text += novoTexto;
+            //                novoTexto = "";
+            //            }
+            //        }
+            //    }
+            //}
+
+        }
+
         private void NumeroAgregado(object sender, EventArgs e)
         {
+
             lblErro.Visible = false;
             var botaoNumerico = ((Button)sender);
 
@@ -203,6 +282,5 @@ namespace Calculadora_Padrão
             if (!txtTela.Text.Contains(","))
                 txtTela.Text += ",";
         }
-
     }
 }

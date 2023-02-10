@@ -71,6 +71,7 @@
             this.txtTela.TabIndex = 0;
             this.txtTela.Text = "0";
             this.txtTela.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtTela.TextChanged += new System.EventHandler(this.NumeroAgregadoTeclado);
             // 
             // btn1
             // 
