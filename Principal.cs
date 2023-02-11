@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,9 +14,10 @@ namespace Calculadora_Padrão
     public partial class frmPrincipal : Form
     {
         // Variáveis de nivel global
-        double num1 = 0, num2 = 0, memoria = 0;
-        char operador;
-
+        private double primeiroNumero = 0, segundoNumero = 0, memoria = 0;
+        private char operador;
+        private string caracteresNumericoEVirgula = ",0123456789";
+        private string caracteresOperadores = "Xx*-+/=";
         public frmPrincipal()
         {
             InitializeComponent();
@@ -23,91 +25,66 @@ namespace Calculadora_Padrão
 
         private void frmPrincipal_Load(object sender, EventArgs e)
         {
-
+            txtTela.Text = "0";
+            txtTela.SelectionStart = txtTela.Text.Length;
+            txtTela.ScrollToCaret();
         }
 
-        private void NumeroAgregadoTeclado(object sender, EventArgs e)
+        private void txtTela_Leave(object sender, EventArgs e)
         {
-            string caracteresPermitidos = "0123456789,+-*/";
-            string texto = txtTela.Text;
+            txtTela.Focus();
+        }
 
-            // Obtém o caractere digitado pelo usuário
-            char caractere = ((KeyPressEventArgs)e).KeyChar;
+        private void TeclaPressionada(object sender, KeyPressEventArgs e)
+        {
 
-            // Verifica se o caractere digitado é permitido
-            if (caracteresPermitidos.Contains(caractere))
+            char caractere = e.KeyChar;
+            if(e.KeyChar == '\b' && txtTela.Text.Length == 1)
             {
-                // Verifica se o texto já contém uma vírgula
-                if (!texto.Contains(",") || caractere == ',')
+                e.Handled = true;
+                txtTela.Text = "0";
+                txtTela.SelectionStart = txtTela.TextLength;
+                txtTela.ScrollToCaret();
+            }
+
+            if (caractere == ',' && txtTela.Text.Contains(","))
+            {
+                e.Handled = true;
+            }
+
+            if (caracteresNumericoEVirgula.Contains(caractere))
+            {
+                if (!txtTela.Text.Contains(","))
                 {
-                    // Verifica se o texto não começa com zero
-                    if (texto.Length == 1 && texto[0] == '0' && caractere != ',')
+                    if (txtTela.Text.Length == 1 && txtTela.Text == "0" && caractere == '0')
                     {
-                        txtTela.Text = caractere.ToString();
+                        e.Handled = true;
                     }
                     else
                     {
-                        txtTela.Text += caractere;
+                        if (txtTela.Text.Length == 1 && txtTela.Text == "0" && caractere != ',')
+                        {
+                            txtTela.Text = "";
+                            e.Handled = false;
+                        }
+                        else if (caractere != ',')
+                            e.Handled = false;
                     }
                 }
+                else if (caractere != ',')
+                {
+                    e.Handled = false;
+                }
             }
-
-            //string caracteresPermitidos = ",Xx*-+/0123456789";
-            //string caracteresNaoPermitidos = "Xx*/+-";
-            //string texto = txtTela.Text;
-            //string novoTexto = "";
-
-            //foreach (char c in texto)
-            //{
-            //    if (caracteresPermitidos.Contains(c))
-            //    {
-            //        novoTexto += c;
-
-            //        if (!novoTexto.Contains(","))
-            //        {
-            //            txtTela.Text += ",";
-            //            novoTexto = "";
-            //        }
-
-            //        if (!caracteresNaoPermitidos.Contains(novoTexto))
-            //        {
-            //            if (!novoTexto.Contains(","))
-            //            {
-            //                if ((txtTela.Text.Length == 1 && txtTela.Text == "0") && novoTexto == "0")
-            //                {
-            //                    txtTela.Text = "0";
-            //                    novoTexto = "";
-            //                }
-
-            //                else
-            //                {
-            //                    if ((txtTela.Text.Length == 1 && txtTela.Text == "0") && novoTexto != "0")
-            //                    {
-            //                        txtTela.Text = novoTexto;
-            //                        novoTexto = "";
-            //                    }
-            //                    else
-            //                    {
-            //                        txtTela.Text += novoTexto;
-            //                        novoTexto = "";
-            //                    }
-            //                }
-            //            }
-            //            else
-            //            {
-            //                txtTela.Text += novoTexto;
-            //                novoTexto = "";
-            //            }
-            //        }
-            //    }
-            //}
 
         }
 
         private void NumeroAgregado(object sender, EventArgs e)
         {
-
+            // Esconde o label de erro
             lblErro.Visible = false;
+
+            // Obtém o botão que foi clicado
             var botaoNumerico = ((Button)sender);
 
             // Verifica se a tela já contém uma vírgula
@@ -115,13 +92,13 @@ namespace Calculadora_Padrão
             {
                 // Verifica se o usuário está digitando 0 ou não.
                 // Se o usuário ficar apertando 0 ele não irá adicionar, só terá um 0 na tela.
-                if ((txtTela.Text.Length == 1 && txtTela.Text == "0") && botaoNumerico.Text == "0")
+                if (txtTela.Text.Length == 1 && txtTela.Text == "0" && botaoNumerico.Text == "0")
                     txtTela.Text = "0";
 
                 // Não apertou 0 para ser o primeiro dígito do número, irá adicionar os número normalmente.
                 else
                 {
-                    if((txtTela.Text.Length == 1 && txtTela.Text == "0") && botaoNumerico.Text != "0")
+                    if(txtTela.Text.Length == 1 && txtTela.Text == "0")
                         txtTela.Text = botaoNumerico.Text;
                     else
                         txtTela.Text += botaoNumerico.Text;
@@ -137,21 +114,22 @@ namespace Calculadora_Padrão
         // Verifica qual operação matemática o usuário vai fazer.
         private void Operacao(object sender, EventArgs e)
         {
+            // Obtém o botão que foi clicado
             var botaoOperador = ((Button)sender);
             operador = Convert.ToChar(botaoOperador.Tag);
-            num1 = Convert.ToDouble(txtTela.Text);
+            primeiroNumero = Convert.ToDouble(txtTela.Text);
 
             // Esses operadores já dará o resultado sem a necessidade de clicar no botão igual.
             if (operador == '√')
             {
-                num1 = Math.Sqrt(num1);
-                num1 = Math.Round(num1, 2);
-                txtTela.Text = num1.ToString();
+                primeiroNumero = Math.Sqrt(primeiroNumero);
+                primeiroNumero = Math.Round(primeiroNumero, 2);
+                txtTela.Text = primeiroNumero.ToString();
             }
             else if (operador == '²')
             {
-                num1 = Math.Pow(num1, 2);
-                txtTela.Text = num1.ToString();
+                primeiroNumero = Math.Pow(primeiroNumero, 2);
+                txtTela.Text = primeiroNumero.ToString();
 
             }
             else
@@ -162,41 +140,54 @@ namespace Calculadora_Padrão
         // Esse método faz a limpeza, dos números da tela, de tudo incluindo o que tiver na memória ou de um em um caractere.
         private void Limpar(object sender, EventArgs e)
         {
+
+            // Obtém o botão que foi clicado
             var botaoLimpar = ((Button)sender);
+
+            // Esconde o label de erro
             lblErro.Visible = false;
 
-            // Apaga somente o número que está na tela. Botão: C.
+            // Verifica o texto do botão e realiza a ação apropriada
             if (botaoLimpar.Text == "C")
-                txtTela.Text = "0";
+                txtTela.Text = "0"; // Botão "C" - apaga somente o número que está na tela
 
-            // Apaga tudo. Botão: CE.
             else if (botaoLimpar.Text == "CE")
             {
+                // Botão "C" - apaga somente o número que está na tela
                 txtTela.Text = "0";
-                num1 = 0;
-                num2 = 0;
+                primeiroNumero = 0;
+                segundoNumero = 0;
                 operador = '\0';
                 memoria = 0;
             }
 
-            // Apaga o último caractere do número que está na tela. Botão: ←.
-            else
+            else // Botão "←" - apaga o último caractere do número que está na tela
             {
-                if (txtTela.Text.Length == 1)
+
+                // Se o texto na tela tem apenas 1 caractere, seta para "0"
+                if (txtTela.Text.Length == 1 || txtTela.Text.Length == 0)
                     txtTela.Text = "0";
 
                 else
                 {
-                    string texto = txtTela.Text;
-                    int comprimento = texto.Length;
-                    int index = texto.LastIndexOf(",");
+                    // Obtém o texto atual na tela
+                    string textoDaTela = txtTela.Text;
+                    int comprimento = textoDaTela.Length;
 
-                    if (index > 0 && Char.IsDigit(texto[index - 1]))
-                        texto = texto.Substring(0, comprimento - 1);
+                    if (textoDaTela.Contains(","))
+                    {
+                        int index = textoDaTela.LastIndexOf(",");
+
+                        // Verifica se o último caractere é uma vírgula e se o caractere anterior é um dígito
+                        if (index > 0 && Char.IsDigit(textoDaTela[index - 1]))
+                            textoDaTela = textoDaTela.Substring(0, comprimento - 1);
+                    }
                     else
-                        texto = texto.Remove(1);
+                    {
+                        textoDaTela = textoDaTela.Remove(textoDaTela.Length - 1);
+                    }
 
-                    txtTela.Text = texto;
+                    txtTela.Text = textoDaTela;
                 }
             }
         }
@@ -204,6 +195,7 @@ namespace Calculadora_Padrão
         // Botões de memória: MC, MR, MS, M+ e M-.
         private void Memoria(object sender, EventArgs e)
         {
+            // Obtém o botão que foi clicado
             var botaoMemoria = ((Button)sender);
 
             // Apaga todos os números salvos na memória. Botão: MC.
@@ -231,23 +223,23 @@ namespace Calculadora_Padrão
         private void btnIgual_Click(object sender, EventArgs e)
         {
             // Número digitado após a escolha da operação matemática.
-            num2 = Convert.ToDouble(txtTela.Text);
+            segundoNumero = Convert.ToDouble(txtTela.Text);
 
             // Calcula de acordo com a operação.
             if (operador == '+')
             {
-                txtTela.Text = (num1 + num2).ToString();
-                num1 = Convert.ToDouble(txtTela.Text);
+                txtTela.Text = (primeiroNumero + segundoNumero).ToString();
+                primeiroNumero = Convert.ToDouble(txtTela.Text);
             }
             else if (operador == '-')
             {
-                txtTela.Text = (num1 - num2).ToString();
-                num1 = Convert.ToDouble(txtTela.Text);
+                txtTela.Text = (primeiroNumero - segundoNumero).ToString();
+                primeiroNumero = Convert.ToDouble(txtTela.Text);
             }
             else if (operador == '*')
             {
-                txtTela.Text = (num1 * num2).ToString();
-                num1 = Convert.ToDouble(txtTela.Text);
+                txtTela.Text = (primeiroNumero * segundoNumero).ToString();
+                primeiroNumero = Convert.ToDouble(txtTela.Text);
             }
             else if (operador == '/')
             {
@@ -255,32 +247,40 @@ namespace Calculadora_Padrão
                 // Se não, vai habilitar uma mensagem de erro na tela.
                 if (txtTela.Text != "0")
                 {
-                    txtTela.Text = (num1 / num2).ToString();
-                    num1 = Convert.ToDouble(txtTela.Text);
+                    txtTela.Text = (primeiroNumero / segundoNumero).ToString();
+                    primeiroNumero = Convert.ToDouble(txtTela.Text);
                 }
                 else
                     lblErro.Visible = true;
             }
             else if (operador == '%')
             {
-                txtTela.Text = ((num1/100) * num2).ToString();
-                num1 = Convert.ToDouble(txtTela.Text);
+                txtTela.Text = ((primeiroNumero/100) * segundoNumero).ToString();
+                primeiroNumero = Convert.ToDouble(txtTela.Text);
             }
         }
+
+
 
         // Inverter o número de positivo para negativo ou vice-versa.
         private void btnMaisOuMenos_Click(object sender, EventArgs e)
         {
-            num1 = Convert.ToDouble(txtTela.Text);
-            num1 *= -1;
-            txtTela.Text = num1.ToString();
+            primeiroNumero = Convert.ToDouble(txtTela.Text);
+            primeiroNumero *= -1;
+            txtTela.Text = primeiroNumero.ToString();
         }
 
         // Colocar vírgula no número ao clicar no botão da vírgula.
         private void btnVirgula_Click(object sender, EventArgs e)
         {
             if (!txtTela.Text.Contains(","))
-                txtTela.Text += ",";
+            {
+                int cursorPosicao = txtTela.SelectionStart;
+                StringBuilder sb = new StringBuilder(txtTela.Text);
+                sb.Insert(cursorPosicao, ",");
+                txtTela.Text = sb.ToString();
+                txtTela.SelectionStart = cursorPosicao + 1;
+            }
         }
     }
 }
