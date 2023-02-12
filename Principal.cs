@@ -67,7 +67,7 @@ namespace Calculadora_Padrão
             {
                 e.Handled = true; // Impedir que o caractere seja inserido na tela.
                 txtTela.Text = "0"; // Limpar o texto da tela.
-                txtTela.SelectionStart = txtTela.TextLength; // Definir a posição do cursor na extremidade direita do texto..
+                txtTela.SelectionStart = txtTela.TextLength; // Definir a posição do cursor na extremidade direita do texto.
             }
 
             // Verificar se o caractere é uma vírgula.
