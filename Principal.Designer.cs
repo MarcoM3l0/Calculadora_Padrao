@@ -500,7 +500,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Calculadora";
             this.Load += new System.EventHandler(this.frmPrincipal_Load);
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.frmPrincipal_MouseClick);
             this.ResumeLayout(false);
             this.PerformLayout();
 

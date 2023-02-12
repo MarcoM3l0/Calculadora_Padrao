@@ -18,7 +18,7 @@ namespace Calculadora_Padrão
         private char operador;
         private int posicaoCursor;
         private string caracteresNumericoEVirgula = ",0123456789";
-        private string caracteresOperadores = "Xx*-+/=";
+        private string caracteresOperadores = "Xx*-+/";
         public frmPrincipal()
         {
             InitializeComponent();
@@ -35,6 +35,28 @@ namespace Calculadora_Padrão
         {
 
             char caractere = e.KeyChar;
+            if (caractere == '=' || e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                btnIgual_Click(this, new EventArgs());
+            }
+
+            if (caracteresOperadores.Contains(caractere))
+            {
+                e.Handled = true;
+                string mult = "Xx*";
+                if (mult.Contains(caractere))
+                    OperacaoTeclado('*');
+                else if (caractere == '-')
+                    OperacaoTeclado('-');
+                else if (caractere == '+')
+                    OperacaoTeclado('+');
+                else if (caractere == '/')
+                    OperacaoTeclado('/');
+
+                txtTela.SelectionStart = txtTela.Text.Length;
+            }
+
             if(e.KeyChar == '\b' && txtTela.Text.Length == 1)
             {
                 e.Handled = true;
@@ -124,12 +146,10 @@ namespace Calculadora_Padrão
         // Verifica qual operação matemática o usuário vai fazer.
         private void Operacao(object sender, EventArgs e)
         {
-            Foco();
-
-            // Obtém o botão que foi clicado
             var botaoOperador = ((Button)sender);
             operador = Convert.ToChar(botaoOperador.Tag);
             primeiroNumero = Convert.ToDouble(txtTela.Text);
+
 
             // Esses operadores já dará o resultado sem a necessidade de clicar no botão igual.
             if (operador == '√')
@@ -137,15 +157,28 @@ namespace Calculadora_Padrão
                 primeiroNumero = Math.Sqrt(primeiroNumero);
                 primeiroNumero = Math.Round(primeiroNumero, 2);
                 txtTela.Text = primeiroNumero.ToString();
+
+                txtTela.SelectionStart = txtTela.Text.Length;
             }
             else if (operador == '²')
             {
                 primeiroNumero = Math.Pow(primeiroNumero, 2);
                 txtTela.Text = primeiroNumero.ToString();
 
+                txtTela.SelectionStart = txtTela.Text.Length;
             }
             else
                 txtTela.Text = "0";
+
+            txtTela.SelectionStart = txtTela.Text.Length;
+        }
+
+        private void OperacaoTeclado(char Operador)
+        {
+            operador = Operador;
+            primeiroNumero = Convert.ToDouble(txtTela.Text);
+
+            txtTela.Text = "0";
 
         }
 
@@ -162,19 +195,21 @@ namespace Calculadora_Padrão
             // Verifica o texto do botão e realiza a ação apropriada
             if (botaoLimpar.Text == "C")
             {
-                Foco();
                 txtTela.Text = "0"; // Botão "C" - apaga somente o número que está na tela
+
+                txtTela.SelectionStart = txtTela.Text.Length;
             }
 
             else if (botaoLimpar.Text == "CE")
             {
-                Foco();
                 // Botão "C" - apaga somente o número que está na tela
                 txtTela.Text = "0";
                 primeiroNumero = 0;
                 segundoNumero = 0;
                 operador = '\0';
                 memoria = 0;
+
+                txtTela.SelectionStart = txtTela.Text.Length;
             }
 
             else // Botão "←" - apaga o último caractere do número que está na tela
@@ -182,10 +217,7 @@ namespace Calculadora_Padrão
 
                 // Se o texto na tela tem apenas 1 caractere, seta para "0"
                 if (txtTela.Text.Length == 1 || txtTela.Text.Length == 0)
-                {
-                    Foco();
                     txtTela.Text = "0";
-                }
 
                 else
                 {
@@ -214,8 +246,6 @@ namespace Calculadora_Padrão
         // Botões de memória: MC, MR, MS, M+ e M-.
         private void Memoria(object sender, EventArgs e)
         {
-            Foco();
-
             // Obtém o botão que foi clicado
             var botaoMemoria = ((Button)sender);
 
@@ -224,8 +254,11 @@ namespace Calculadora_Padrão
                 memoria = 0;
 
             // Recupera o último número salvo na memória. Botão: MR.
-            else if (botaoMemoria.Text == "MR") 
+            else if (botaoMemoria.Text == "MR")
+            {
                 txtTela.Text = memoria.ToString();
+                txtTela.SelectionStart = txtTela.Text.Length;
+            } 
 
             // Salva um novo número na memória. Botão: MS.
             else if (botaoMemoria.Text == "MS")
@@ -243,7 +276,6 @@ namespace Calculadora_Padrão
         // Faz os cálculos matemáticos solicitados ao clicar no botão igual.
         private void btnIgual_Click(object sender, EventArgs e)
         {
-            Foco();
             // Número digitado após a escolha da operação matemática.
             segundoNumero = Convert.ToDouble(txtTela.Text);
 
@@ -280,33 +312,30 @@ namespace Calculadora_Padrão
                 txtTela.Text = ((primeiroNumero/100) * segundoNumero).ToString();
                 primeiroNumero = Convert.ToDouble(txtTela.Text);
             }
+
+            txtTela.SelectionStart = txtTela.Text.Length;
         }
 
         private void txtTela_Leave(object sender, EventArgs e)
         {
             posicaoCursor = txtTela.SelectionStart;
-        }
-
-        private void frmPrincipal_MouseClick(object sender, MouseEventArgs e)
-        {
             txtTela.Focus();
-            txtTela.SelectionStart = posicaoCursor + 1;
+            txtTela.SelectionStart = posicaoCursor;
         }
 
         // Inverter o número de positivo para negativo ou vice-versa.
         private void btnMaisOuMenos_Click(object sender, EventArgs e)
         {
-            Foco();
-
             primeiroNumero = Convert.ToDouble(txtTela.Text);
             primeiroNumero *= -1;
             txtTela.Text = primeiroNumero.ToString();
+
+            txtTela.SelectionStart = txtTela.Text.Length;
         }
 
         // Colocar vírgula no número ao clicar no botão da vírgula.
         private void btnVirgula_Click(object sender, EventArgs e)
         {
-            Foco();
 
             int cursorPosicao = txtTela.SelectionStart;
             StringBuilder sb = new StringBuilder(txtTela.Text);
@@ -325,12 +354,6 @@ namespace Calculadora_Padrão
                     txtTela.SelectionStart = cursorPosicao + 1;
                 }
             }
-        }
-
-        private void Foco()
-        {
-            txtTela.Focus();
-            txtTela.SelectionStart = posicaoCursor + 1;
         }
     }
 }
