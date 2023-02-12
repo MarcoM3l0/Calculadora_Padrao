@@ -69,8 +69,9 @@
             this.txtTela.Name = "txtTela";
             this.txtTela.Size = new System.Drawing.Size(254, 67);
             this.txtTela.TabIndex = 0;
-            this.txtTela.Text = "0";
             this.txtTela.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtTela.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TeclaPressionada);
+            this.txtTela.Leave += new System.EventHandler(this.txtTela_Leave);
             // 
             // btn1
             // 
