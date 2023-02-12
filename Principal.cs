@@ -13,12 +13,12 @@ namespace Calculadora_Padrão
 {
     public partial class frmPrincipal : Form
     {
-        // Variáveis de nivel global
-        private double primeiroNumero = 0, segundoNumero = 0, memoria = 0;
-        private char operador;
-        private int posicaoCursor;
-        private string caracteresNumericoEVirgula = ",0123456789";
-        private string caracteresOperadores = "Xx*-+/";
+        // Variáveis globais.
+        private double primeiroNumero = 0, segundoNumero = 0, memoria = 0; // Variáveis para armazenar os números da operação.
+        private char operador; // Variável para armazenar o operador da operação.
+        private int posicaoCursor; // Variável para armazenar a posição do cursor. 
+        private string caracteresNumericoEVirgula = ",0123456789"; // Variável para armazenar caracteres numéricos e uma vírgula.
+        private string caracteresOperadores = "Xx*-+/"; // Variável para armazenar caracteres operadores.
         public frmPrincipal()
         {
             InitializeComponent();
@@ -34,16 +34,21 @@ namespace Calculadora_Padrão
         private void TeclaPressionada(object sender, KeyPressEventArgs e)
         {
 
-            char caractere = e.KeyChar;
+            char caractere = e.KeyChar; // Capturar o caractere pressionado pelo usuário.
+
+            // Verificar se o caractere é o sinal de igualdade ou a tecla Enter.
             if (caractere == '=' || e.KeyChar == (char)Keys.Enter)
             {
-                e.Handled = true;
-                btnIgual_Click(this, new EventArgs());
+                e.Handled = true; // Impedir que o caractere seja inserido na tela.
+                btnIgual_Click(this, new EventArgs()); // Simular o clique do botão "Igual".
             }
 
+            // Verificar se o caractere é um operador matemático.
             if (caracteresOperadores.Contains(caractere))
             {
-                e.Handled = true;
+                e.Handled = true; // Impedir que o caractere seja inserido na tela.
+
+                // Identificar qual operador foi pressionado.
                 string mult = "Xx*";
                 if (mult.Contains(caractere))
                     OperacaoTeclado('*');
@@ -54,35 +59,40 @@ namespace Calculadora_Padrão
                 else if (caractere == '/')
                     OperacaoTeclado('/');
 
-                txtTela.SelectionStart = txtTela.Text.Length;
+                txtTela.SelectionStart = txtTela.Text.Length; // Definir a posição do cursor na extremidade direita do texto.
             }
 
-            if(e.KeyChar == '\b' && txtTela.Text.Length == 1)
+            // Verificar se o caractere é a tecla "Backspace".
+            if (e.KeyChar == '\b' && txtTela.Text.Length == 1)
             {
-                e.Handled = true;
-                txtTela.Text = "0";
-                txtTela.SelectionStart = txtTela.TextLength;
-                txtTela.ScrollToCaret();
+                e.Handled = true; // Impedir que o caractere seja inserido na tela.
+                txtTela.Text = "0"; // Limpar o texto da tela.
+                txtTela.SelectionStart = txtTela.TextLength; // Definir a posição do cursor na extremidade direita do texto..
             }
 
+            // Verificar se o caractere é uma vírgula.
             if (caractere == ',' && txtTela.Text.Contains(","))
             {
-                e.Handled = true;
+                e.Handled = true; // Impedir que o caractere seja inserido na tela.
             }
 
+            // Verificar se o caractere é um número ou uma vírgula.
             if (caracteresNumericoEVirgula.Contains(caractere))
             {
+                // Verificar se o texto da tela já possui uma vírgula.
                 if (!txtTela.Text.Contains(","))
                 {
+                    // Se a string na tela não possui vírgula e seu tamanho é igual a 1 e seu conteúdo é 0.
                     if (txtTela.Text.Length == 1 && txtTela.Text == "0" && caractere == '0')
                     {
-                        e.Handled = true;
+                        e.Handled = true; // Impedir que o caractere seja inserido na tela.
                     }
                     else
                     {
+                        // Se a string na tela tem tamanho igual a 1, conteúdo igual a 0 e caractere diferente de ','.
                         if (txtTela.Text.Length == 1 && txtTela.Text == "0" && caractere != ',')
                         {
-                            txtTela.Text = "";
+                            txtTela.Text = ""; // Gambiarra para evitar que zera permaneça travado na tela.
                             e.Handled = false;
                         }
                         else if (caractere != ',')
@@ -99,33 +109,34 @@ namespace Calculadora_Padrão
 
         private void NumeroAgregado(object sender, EventArgs e)
         {
-            // Esconde o label de erro
-            lblErro.Visible = false;
+            lblErro.Visible = false; // Esconder o label de erro.
 
-            // Obtém o botão que foi clicado
-            var botaoNumerico = ((Button)sender);
-            int cursorPosicao = txtTela.SelectionStart;
-            StringBuilder sb = new StringBuilder(txtTela.Text);
+            var botaoNumerico = ((Button)sender); // Identificar o botão numérico clicado.
+            int cursorPosicao = txtTela.SelectionStart; // Obter a posição do cursor na textbox.
+            StringBuilder sb = new StringBuilder(txtTela.Text); // StringBuilder para manipular a string da textbox.
 
-            // Verifica se a tela já contém uma vírgula
+            // Verifica se a textbox já tem uma vírgula.
             if (!txtTela.Text.Contains(","))
             {
-                // Verifica se o usuário está digitando 0 ou não.
-                // Se o usuário ficar apertando 0 ele não irá adicionar, só terá um 0 na tela.
+
+                // Se a textbox já tiver um "0", mas o botão clicado não for uma vírgula.
                 if (txtTela.Text.Length == 1 && txtTela.Text == "0" && botaoNumerico.Text == "0")
                     txtTela.Text = "0";
 
-                // Não apertou 0 para ser o primeiro dígito do número, irá adicionar os número normalmente.
+                
                 else
                 {
-                    if(txtTela.Text.Length == 1 && txtTela.Text == "0")
+                    // Se a textbox só tiver um "0".
+                    if (txtTela.Text.Length == 1 && txtTela.Text == "0")
                     {
+                        // Substituir "0" pelo número clicado.
                         sb.Replace("0", botaoNumerico.Text);
                         txtTela.Text = sb.ToString();
                         txtTela.SelectionStart = cursorPosicao + 1;
                     }
                     else
                     {
+                        // Inserir o número clicado na textbox.
                         sb.Insert(cursorPosicao, botaoNumerico.Text);
                         txtTela.Text = sb.ToString();
                         txtTela.SelectionStart = cursorPosicao + 1;
@@ -133,9 +144,10 @@ namespace Calculadora_Padrão
                 }
             }
 
-            // Tem uma vírgula na tela e adiciona um número após vírgula.
+            // Se a textbox já tiver uma vírgula.
             else
             {
+                // Inserir o número clicado na textbox.
                 sb.Insert(cursorPosicao, botaoNumerico.Text);
                 txtTela.Text = sb.ToString();
                 txtTela.SelectionStart = cursorPosicao + 1;
@@ -143,23 +155,24 @@ namespace Calculadora_Padrão
                
         }
 
-        // Verifica qual operação matemática o usuário vai fazer.
+        
         private void Operacao(object sender, EventArgs e)
         {
-            var botaoOperador = ((Button)sender);
-            operador = Convert.ToChar(botaoOperador.Tag);
-            primeiroNumero = Convert.ToDouble(txtTela.Text);
+            var botaoOperador = ((Button)sender); // Armazena o botão clicado pelo usuário na variável botaoOperador.
+            operador = Convert.ToChar(botaoOperador.Tag); // Armazena o operador matemático na variável operador.
+            primeiroNumero = Convert.ToDouble(txtTela.Text); // Armazena o primeiro número digitado pelo usuário na variável primeiroNumero.
 
 
-            // Esses operadores já dará o resultado sem a necessidade de clicar no botão igual.
+            // Verifica se o operador é a raiz quadrada (√). E calcula a raiz quadrada do primeiro número.
             if (operador == '√')
             {
                 primeiroNumero = Math.Sqrt(primeiroNumero);
-                primeiroNumero = Math.Round(primeiroNumero, 2);
+                primeiroNumero = Math.Round(primeiroNumero, 2);  
                 txtTela.Text = primeiroNumero.ToString();
 
                 txtTela.SelectionStart = txtTela.Text.Length;
             }
+            // Verifica se o operador é o quadrado (²). E calcula o quadrado do primeiro número.
             else if (operador == '²')
             {
                 primeiroNumero = Math.Pow(primeiroNumero, 2);
@@ -167,61 +180,63 @@ namespace Calculadora_Padrão
 
                 txtTela.SelectionStart = txtTela.Text.Length;
             }
+            // Se não for nem raiz quadrada nem quadrado, coloca o texto da tela como 0 e o programa espera a digitação do segundo número.
             else
                 txtTela.Text = "0";
 
-            txtTela.SelectionStart = txtTela.Text.Length;
+            txtTela.SelectionStart = txtTela.Text.Length; // Coloca o cursor na posição final do texto.
         }
 
         private void OperacaoTeclado(char Operador)
         {
             operador = Operador;
             primeiroNumero = Convert.ToDouble(txtTela.Text);
-
             txtTela.Text = "0";
-
         }
 
-        // Esse método faz a limpeza, dos números da tela, de tudo incluindo o que tiver na memória ou de um em um caractere.
+        
         private void Limpar(object sender, EventArgs e)
         {
 
-            // Obtém o botão que foi clicado
-            var botaoLimpar = ((Button)sender);
+            
+            var botaoLimpar = ((Button)sender); //Armazena o objeto do botão clicado na variável botaoLimpar.
 
-            // Esconde o label de erro
-            lblErro.Visible = false;
+            lblErro.Visible = false; //Esconde o rótulo de erro.
 
-            // Verifica o texto do botão e realiza a ação apropriada
+            //Verifica se o botão [C].
             if (botaoLimpar.Text == "C")
             {
-                txtTela.Text = "0"; // Botão "C" - apaga somente o número que está na tela
-
-                txtTela.SelectionStart = txtTela.Text.Length;
+                txtTela.Text = "0"; //Se for, limpa a tela de exibição da calculadora, colocando "0" nela.
+                txtTela.SelectionStart = txtTela.Text.Length; //Coloca o cursor no final do texto da tela.
             }
 
+            //Verifica se o botão [CE].
             else if (botaoLimpar.Text == "CE")
             {
-                // Botão "C" - apaga somente o número que está na tela
+                //Se for, limpa todos os valores usados na calculadora, incluindo a tela, o primeiro número,
+                //o segundo número, o operador e a memória.
                 txtTela.Text = "0";
                 primeiroNumero = 0;
                 segundoNumero = 0;
                 operador = '\0';
                 memoria = 0;
 
-                txtTela.SelectionStart = txtTela.Text.Length;
+                txtTela.SelectionStart = txtTela.Text.Length; //Coloca o cursor no final do texto da tela.
             }
 
-            else // Botão "←" - apaga o último caractere do número que está na tela
+            else 
             {
 
-                // Se o texto na tela tem apenas 1 caractere, seta para "0"
+                //Verifica se o botão [←].
+                //remove o último caractere da tela, se o comprimento da string for maior ou igual a 1.
                 if (txtTela.Text.Length == 1 || txtTela.Text.Length == 0)
                     txtTela.Text = "0";
 
                 else
                 {
-                    int cursorPosition = txtTela.SelectionStart;
+                    int cursorPosition = txtTela.SelectionStart; //Obtém a posição atual do cursor.
+
+                    //Se a posição do cursor for maior que 0, remove o caractere anterior a ele.
                     if (cursorPosition > 0)
                     {
                         string textoDaTela = txtTela.Text;
@@ -230,10 +245,13 @@ namespace Calculadora_Padrão
                         txtTela.Text = sb.ToString();
                         txtTela.SelectionStart = cursorPosition - 1;
 
+                        //Se a posição do cursor for 1, coloca o cursor no final do texto.
                         if (cursorPosition == 1)
                         {
                             txtTela.SelectionStart = txtTela.Text.Length;
                         }
+
+                        //Caso contrário, mantém o cursor na posição anterior.
                         else
                         {
                             txtTela.SelectionStart = cursorPosition - 1;
@@ -243,79 +261,78 @@ namespace Calculadora_Padrão
             }
         }
 
-        // Botões de memória: MC, MR, MS, M+ e M-.
+        
         private void Memoria(object sender, EventArgs e)
         {
-            // Obtém o botão que foi clicado
-            var botaoMemoria = ((Button)sender);
+            
+            var botaoMemoria = ((Button)sender); // Recupera o botão que foi clicado.
 
-            // Apaga todos os números salvos na memória. Botão: MC.
-            if (botaoMemoria.Text == "MC")
+            // Verifica qual botão foi clicado e realiza a ação correspondente.
+            if (botaoMemoria.Text == "MC") // Zerar a memória.
                 memoria = 0;
 
-            // Recupera o último número salvo na memória. Botão: MR.
-            else if (botaoMemoria.Text == "MR")
+            else if (botaoMemoria.Text == "MR") // Recuperar o valor da memória e exibir na tela.
             {
                 txtTela.Text = memoria.ToString();
                 txtTela.SelectionStart = txtTela.Text.Length;
             } 
 
-            // Salva um novo número na memória. Botão: MS.
-            else if (botaoMemoria.Text == "MS")
+            else if (botaoMemoria.Text == "MS") // Salvar o valor na memória.
                 memoria = Convert.ToDouble(txtTela.Text);
 
-            // Soma o número que está na tela com o último número salvo. Botão: M+.
-            else if (botaoMemoria.Text == "M+")
+            else if (botaoMemoria.Text == "M+") // Adicionar o valor na tela ao valor na memória.
                 memoria += Convert.ToDouble(txtTela.Text);
 
-            // Subtrai o número que está na tela com o último número salvo. Botão: M-.
-            else
+            else // Subtrair o valor na tela do valor na memória.
                 memoria -= Convert.ToDouble(txtTela.Text);
         }
 
-        // Faz os cálculos matemáticos solicitados ao clicar no botão igual.
+        
         private void btnIgual_Click(object sender, EventArgs e)
         {
-            // Número digitado após a escolha da operação matemática.
-            segundoNumero = Convert.ToDouble(txtTela.Text);
+            
+            segundoNumero = Convert.ToDouble(txtTela.Text); // Armazena o segundo número digitado pelo usuário na tela da calculadora.
 
-            // Calcula de acordo com a operação.
-            if (operador == '+')
+            // Verifica qual operação deve ser realizada com base no operador armazenado.
+            if (operador == '+') // Realiza a operação de adição.
             {
                 txtTela.Text = (primeiroNumero + segundoNumero).ToString();
                 primeiroNumero = Convert.ToDouble(txtTela.Text);
             }
-            else if (operador == '-')
+            else if (operador == '-') // Realiza a operação de subtração.
             {
                 txtTela.Text = (primeiroNumero - segundoNumero).ToString();
                 primeiroNumero = Convert.ToDouble(txtTela.Text);
             }
-            else if (operador == '*')
+            else if (operador == '*') // Realiza a operação de multiplicação.
             {
                 txtTela.Text = (primeiroNumero * segundoNumero).ToString();
                 primeiroNumero = Convert.ToDouble(txtTela.Text);
             }
-            else if (operador == '/')
+            else if (operador == '/') // Realiza a operação de divisão.
             {
-                // Verifica se o cálculo da divisão pode ser feito ou não.
-                // Se não, vai habilitar uma mensagem de erro na tela.
+
+                // Verifica se o segundo número é zero, o que resultaria em uma divisão por zero.
                 if (txtTela.Text != "0")
                 {
+                    // Realiza a operação de divisão.
                     txtTela.Text = (primeiroNumero / segundoNumero).ToString();
                     primeiroNumero = Convert.ToDouble(txtTela.Text);
                 }
+                // Exibe uma mensagem de erro se a divisão for por zero.
                 else
-                    lblErro.Visible = true;
+                    lblErro.Visible = true; 
             }
-            else if (operador == '%')
+            else if (operador == '%') // Realiza a operação de porcentagem.
             {
                 txtTela.Text = ((primeiroNumero/100) * segundoNumero).ToString();
                 primeiroNumero = Convert.ToDouble(txtTela.Text);
             }
 
-            txtTela.SelectionStart = txtTela.Text.Length;
+            txtTela.SelectionStart = txtTela.Text.Length; // Coloca o cursor no final do texto na tela da calculadora.
         }
 
+        //Deixa o foco sempre no txtTela.
         private void txtTela_Leave(object sender, EventArgs e)
         {
             posicaoCursor = txtTela.SelectionStart;
@@ -323,7 +340,7 @@ namespace Calculadora_Padrão
             txtTela.SelectionStart = posicaoCursor;
         }
 
-        // Inverter o número de positivo para negativo ou vice-versa.
+        // Inverter o valor de positivo para negativo, ou vice-versa, do número. 
         private void btnMaisOuMenos_Click(object sender, EventArgs e)
         {
             primeiroNumero = Convert.ToDouble(txtTela.Text);
@@ -333,25 +350,28 @@ namespace Calculadora_Padrão
             txtTela.SelectionStart = txtTela.Text.Length;
         }
 
-        // Colocar vírgula no número ao clicar no botão da vírgula.
+        
         private void btnVirgula_Click(object sender, EventArgs e)
         {
 
-            int cursorPosicao = txtTela.SelectionStart;
-            StringBuilder sb = new StringBuilder(txtTela.Text);
+            int cursorPosicao = txtTela.SelectionStart; // Armazenando a posição atual do cursor na tela.
+            StringBuilder sb = new StringBuilder(txtTela.Text); // Criando um objeto StringBuilder com o texto atual na tela.
+
+            // Verificando se já existe uma vírgula na string.
             if (!txtTela.Text.Contains(","))
             {
+                // Caso a string seja igual a "0".
                 if (txtTela.Text == "0")
                 {
-                    sb.Replace("0", "0,");
+                    sb.Replace("0", "0,"); // Substituindo "0" por "0,". Essa outra gambiarra, pois a virgula tava apagando o "0" e so ficando ",".
                     txtTela.Text = sb.ToString();
-                    txtTela.SelectionStart = cursorPosicao + 1;
+                    txtTela.SelectionStart = cursorPosicao + 1; // Movendo o cursor para a posição correta.
                 }
                 else
                 {
-                    sb.Insert(cursorPosicao, ",");
+                    sb.Insert(cursorPosicao, ","); // Inserindo uma vírgula na posição do cursor.
                     txtTela.Text = sb.ToString();
-                    txtTela.SelectionStart = cursorPosicao + 1;
+                    txtTela.SelectionStart = cursorPosicao + 1; // Movendo o cursor para a posição correta.
                 }
             }
         }
